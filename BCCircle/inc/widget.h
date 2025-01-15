@@ -18,6 +18,9 @@ public:
     Widget(QWidget *parent = nullptr);
     ~Widget();
 
+public slots:
+    void on_clicked();
+
 private:
     Ui::Form *ui;
 };
