@@ -2,6 +2,7 @@
 #include "widget.h"
 
 #include <QApplication>
+#include <QStyleFactory>
 
 #include <sstream>
 #include <vector>
@@ -17,8 +18,29 @@ void test4();
 void test5();
 void test6();
 
+QApplication *g_app = nullptr;
+
+namespace QtInit
+{
+	inline int &getArgc()
+	{
+		static int ans = 1;
+		return ans;
+	}
+
+	inline char **getArgv()
+	{
+		static char *argv[] = {R"(D:\soft\ZWCAD 2025\ZwCAD.exe)"};
+		return argv;
+	}
+}
+
 void initApp()
 {
+	if (!qApp)
+		g_app = new QApplication(QtInit::getArgc(), QtInit::getArgv());
+	QApplication::setStyle(QStyleFactory::create("Fusion"));
+
 	// register a command with the CAD command mechanism
 	using funcPtr = void (*)(void);
 	std::vector<funcPtr> cmdFuncVec{test0, test1, test2, test3, test4, test5, test6};
@@ -43,6 +65,14 @@ void initApp()
 
 void unloadApp()
 {
+	foreach (QWidget *widget, QApplication::topLevelWidgets())
+		widget->close();
+	if (g_app)
+	{
+		delete g_app;
+		g_app = nullptr;
+	}
+
 	bc_AddObjOverruleCanNotCopy();
 
 	// 反注册自定义实体
@@ -85,17 +115,10 @@ void test5()
 
 void test6()
 {
-	if (qApp == nullptr)
-	{
-		// char *argv[]{R"(D:\Project_All\Cpp_Project\ZRX\build\BCCircle\bin\BCCircle.zrx)"};
-		char *argv[]{nullptr};
-		int argc = 0;
-		QApplication app(argc, argv);
-		Widget *w = new Widget;
-		w->setWindowTitle("Qt Widget in ARX");
-		w->show();
-		app.exec();
-	}
+	Widget *widget = new Widget;
+	widget->setAttribute(Qt::WA_DeleteOnClose);
+	widget->setWindowTitle("Qt Widget in ARX");
+	widget->show();
 }
 
 extern "C" AcRx::AppRetCode

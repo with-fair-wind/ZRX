@@ -13,7 +13,7 @@ set(CMAKE_PREFIX_PATH ${QT_PATH})
 
 # set(Qt5_DIR " ${QT_PATH}/lib/cmake/Qt5 ")
 # set(ENV{QT_QPA_PLATFORM_PLUGIN_PATH} "D:/soft/Qt/Qt5.14.2/5.14.2/msvc2017_64/plugins/platforms")
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Core Gui)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
 if(Qt${QT_VERSION_MAJOR}_FOUND)
@@ -59,7 +59,10 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 )
 
 target_link_directories(${PROJECT_NAME} PRIVATE ${zrxsdk_dir}/lib-${CMAKE_VS_PLATFORM_NAME})
-target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBS} Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBS}
+    Qt${QT_VERSION_MAJOR}::Widgets
+    Qt${QT_VERSION_MAJOR}::Core
+    Qt${QT_VERSION_MAJOR}::Gui)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
     FOLDER "Component"
