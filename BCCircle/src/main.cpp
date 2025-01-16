@@ -1,5 +1,8 @@
 #include "BCCircle.h"
 #include "widget.h"
+#include "BCDimension.h"
+#include "BCEntityReactor.h"
+#include "BCInputContextReactor.h"
 
 #include <QApplication>
 #include <QStyleFactory>
@@ -55,6 +58,12 @@ void initApp()
 								ACRX_CMD_TRANSPARENT,
 								cmdFuncVec[i]);
 	}
+	acedRegCmds->addCommand(_T("HELLOWORLD_COMMANDS"), _T("addEntReactor"), _T("addEntReactor"), ACRX_CMD_TRANSPARENT, addEntityReactor);
+	acedRegCmds->addCommand(_T("HELLOWORLD_COMMANDS"), _T("removeEntReactor"), _T("removeEntReactor"), ACRX_CMD_TRANSPARENT, removeEntityReactor);
+	acedRegCmds->addCommand(_T("HELLOWORLD_COMMANDS"), _T("clearEntReactor"), _T("clearEntReactor"), ACRX_CMD_TRANSPARENT, clearEntityReactor);
+
+	acedRegCmds->addCommand(_T("HELLOWORLD_COMMANDS"), _T("addInputContextReactor"), _T("addInputContextReactor"), ACRX_CMD_MODAL, addInputContextReactor);
+	acedRegCmds->addCommand(_T("HELLOWORLD_COMMANDS"), _T("removeInputContextReactor"), _T("removeInputContextReactor"), ACRX_CMD_MODAL, removeInputContextReactor);
 
 	// 注册自定义实体
 	BCCircle::rxInit();
@@ -75,6 +84,9 @@ void unloadApp()
 
 	bc_AddObjOverruleCanNotCopy();
 
+	removeInputContextReactor();
+	clearEntityReactor();
+
 	// 反注册自定义实体
 	deleteAcRxClass(BCCircle::desc());
 	deleteAcRxClass(MyObject::desc());
@@ -85,7 +97,8 @@ void unloadApp()
 
 void test0()
 {
-	test_mycircle();
+	test_dim();
+	// test_mycircle();
 }
 
 void test1()
