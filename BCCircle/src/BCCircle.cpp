@@ -477,12 +477,12 @@ void test_buildlink()
 	ads_point pt;
 	AcDbObjectId parentEntId, childEntId;
 
-	int rc = acedEntSel(_T("请选择父实体"), ent, pt);
+	int rc = acedEntSel(_T("选择父实体"), ent, pt);
 	if (rc != RTNORM)
 		return;
 	acdbGetObjectId(parentEntId, ent);
 
-	rc = acedEntSel(_T("请选择子实体"), ent, pt);
+	rc = acedEntSel(_T("选择子实体"), ent, pt);
 	if (rc != RTNORM)
 		return;
 	acdbGetObjectId(childEntId, ent);
