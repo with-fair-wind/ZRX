@@ -3,6 +3,9 @@
 #include "BCDimension.h"
 #include "BCEntityReactor.h"
 #include "BCInputContextReactor.h"
+#include "BCPersistentReactor.h"
+#include <chapter_13/persreactor.h>
+#include <chapter_13/dbreactor.h>
 
 #include <QApplication>
 #include <QStyleFactory>
@@ -65,9 +68,35 @@ void initApp()
 	acedRegCmds->addCommand(_T("HELLOWORLD_COMMANDS"), _T("addInputContextReactor"), _T("addInputContextReactor"), ACRX_CMD_MODAL, addInputContextReactor);
 	acedRegCmds->addCommand(_T("HELLOWORLD_COMMANDS"), _T("removeInputContextReactor"), _T("removeInputContextReactor"), ACRX_CMD_MODAL, removeInputContextReactor);
 
+	acedRegCmds->addCommand(_T("HELLOWORLD_COMMANDS"),
+							_T("PersistentReactor"),
+							_T("PersistentReactor"),
+							ACRX_CMD_MODAL,
+							cmd_PersistentReactor);
+
+	acedRegCmds->addCommand(_T("HELLOWORLD_COMMANDS"),
+							_T("WATCHDB"),
+							_T("WATCHDB"),
+							ACRX_CMD_MODAL,
+							watchDb);
+
+	acedRegCmds->addCommand(_T("HELLOWORLD_COMMANDS"),
+							_T("CLEARREAC"),
+							_T("CLEARREAC"),
+							ACRX_CMD_MODAL,
+							clearReactors);
+
+	acedRegCmds->addCommand(_T("HELLOWORLD_COMMANDS"),
+							_T("ASSOCCIRS"),
+							_T("ASSOCCIRS"),
+							ACRX_CMD_MODAL,
+							assocCircles);
+
 	// 注册自定义实体
 	BCCircle::rxInit();
 	MyObject::rxInit();
+	DimensionPersistentReactor::rxInit();
+	CPersistentReactor::rxInit();
 
 	acrxBuildClassHierarchy();
 }
@@ -90,6 +119,8 @@ void unloadApp()
 	// 反注册自定义实体
 	deleteAcRxClass(BCCircle::desc());
 	deleteAcRxClass(MyObject::desc());
+	deleteAcRxClass(DimensionPersistentReactor::desc());
+	deleteAcRxClass(CPersistentReactor::desc());
 
 	// 反注册命令
 	acedRegCmds->removeGroup(_T("HELLOWORLD_COMMANDS"));
