@@ -67,8 +67,6 @@ void test_dim()
 
                             std::cout << geomIdArray.logicalLength();
 
-                            pDimAssoc->addToDimensionReactor();
-
                             pDimAssoc->close();
                         }
                     }
@@ -97,14 +95,17 @@ void modifyDistance(const AcDbObjectIdArray &objIdArr, double oriDistance, doubl
             AcGeVector3d moveDirection = direction.y >= 0 ? AcGeVector3d(direction.y, -direction.x, 0) : AcGeVector3d(-direction.y, direction.x, 0);
             moveDirection.normalize();
 
-            AcGePoint3d newStartPoint = pLine->startPoint() + moveDirection * (targetDistance - oriDistance);
-            AcGePoint3d newEndPoint = pLine->endPoint() + moveDirection * (targetDistance - oriDistance);
+            AcGeMatrix3d moveMatrix = AcGeMatrix3d::translation(moveDirection * (targetDistance - oriDistance));
+            pLine->transformBy(moveMatrix);
 
-            es = pLine->setStartPoint(newStartPoint);
-            es = pLine->setEndPoint(newEndPoint);
+            // AcGePoint3d newStartPoint = pLine->startPoint() + moveDirection * (targetDistance - oriDistance);
+            // AcGePoint3d newEndPoint = pLine->endPoint() + moveDirection * (targetDistance - oriDistance);
+
+            // es = pLine->setStartPoint(newStartPoint);
+            // es = pLine->setEndPoint(newEndPoint);
 
             // es = pLine->upgradeOpen();
-            es = pLine->close();
+            // es = pLine->close();
         }
         es = pEnt->close();
     }

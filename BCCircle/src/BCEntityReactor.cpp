@@ -65,7 +65,7 @@ void BCEntityReactor::openedForModify(const AcDbObject *dbObj)
     acutPrintf(strLayer);
 }
 
-void BCEntityReactor::modified(const AcDbObject *dbObj)
+void BCEntityReactor::modified(const AcDbObject * dbObj)
 {
     if (!dbObj->isKindOf(AcDbRotatedDimension::desc()))
     {
@@ -78,8 +78,8 @@ void BCEntityReactor::modified(const AcDbObject *dbObj)
     ACHAR *dimText = pRotatedDim->dimensionText();
     acutPrintf(L"\n测量单位：%g\n", m_measuredValue);
     acutPrintf(L"\n文字替代：%s\n", dimText);
-    double curDistance = std::wcstod(dimText, nullptr);
-    if (curDistance != m_measuredValue && curDistance != 0.)
+    m_curDistance = std::wcstod(dimText, nullptr);
+    if (m_curDistance != m_measuredValue && m_curDistance != 0.)
     {
         AcDbObjectId dictId = pRotatedDim->extensionDictionary();
         AcDbDictionary *pDict = nullptr;
@@ -90,13 +90,12 @@ void BCEntityReactor::modified(const AcDbObject *dbObj)
             pDict->close();
             if (pDimAssoc)
             {
-                AcDbObjectIdArray geomIdArray;
-                pDimAssoc->getDimAssocGeomIds(geomIdArray);
-
-                for (int i = 0; i < geomIdArray.logicalLength(); ++i)
+                pDimAssoc->getDimAssocGeomIds(m_geomIdArray);
+                pDimAssoc->close();
+                for (int i = 0; i < m_geomIdArray.logicalLength(); ++i)
                 {
                     AcDbEntity *pGeom = nullptr;
-                    if (acdbOpenAcDbEntity(pGeom, geomIdArray[i], AcDb::kForWrite) == Acad::eOk)
+                    if (acdbOpenAcDbEntity(pGeom, m_geomIdArray[i], AcDb::kForWrite) == Acad::eOk)
                     {
                         if (pGeom->isKindOf(AcDbLine::desc()))
                         {
@@ -117,15 +116,40 @@ void BCEntityReactor::modified(const AcDbObject *dbObj)
                     }
                 }
 
-                modifyDistance(geomIdArray, m_measuredValue, curDistance);
+                m_bflag = true;
 
-                pDimAssoc->close();
+                CString strLayer;
+                strLayer.Format(_T("\nEntity:%s has been modified.The layerName:%s.\n"), pRotatedDim->isA()->name(), pRotatedDim->layer());
+                acutPrintf(strLayer);
+                //modifyDistance(m_geomIdArray, m_measuredValue, m_curDistance);
             }
         }
     }
-    CString strLayer;
-    strLayer.Format(_T("\nEntity:%s has been modified.The layerName:%s.\n"), pRotatedDim->isA()->name(), pRotatedDim->layer());
-    acutPrintf(strLayer);
+}
+
+void BCEntityReactor::objectClosed(const AcDbObjectId objId)
+{
+    //if (m_bflag)
+    //{
+    //    m_bflag = false;
+    //    acutPrintf(_T("\nobjectClosed"));
+
+    //    AcTransaction* pTrans = actrTransactionManager->startTransaction();
+    //    //AcDbObject* dbObj = nullptr;
+    //    //if ((acdbOpenObject(dbObj, objId, AcDb::kForWrite)) != Acad::eOk)
+    //    //{
+    //    //    if (!dbObj->isKindOf(AcDbRotatedDimension::desc()))
+    //    //    {
+    //    //        acutPrintf(_T("\nObject is not a valid RotatedDimension Entity!"));
+    //    //        return;
+    //    //    }
+    //    //    AcDbRotatedDimension* pRotatedDim = AcDbRotatedDimension::cast(dbObj);
+    //    //    pRotatedDim->setDimensionText(_T(""));
+    //    //    pRotatedDim->close();
+    //    //}
+    //    modifyDistance(m_geomIdArray, m_measuredValue, m_curDistance);
+    //    actrTransactionManager->endTransaction();
+    //}
 }
 
 void BCEntityReactor::printObjInfo(const AcDbObject *pObj)
@@ -185,7 +209,7 @@ void addEntityReactor()
 void removeEntityReactor()
 {
     AcDbObject *pEnt = BCEntityReactor::selectObject(AcDb::kForWrite);
-    if (g_pEntityReactor != NULL)
+    if (g_pEntityReactor)
         g_pEntityReactor->delReactorFromObject(pEnt);
     pEnt->close();
 }

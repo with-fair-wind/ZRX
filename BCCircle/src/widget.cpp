@@ -16,7 +16,7 @@ Widget::Widget(QWidget *parent)
 
 void Widget::on_clicked()
 {
-#define V_1
+#define V_3
     AcApDocument *pDoc = acDocManager->curDocument();
 #ifdef V_1
     if (pDoc)
@@ -24,7 +24,7 @@ void Widget::on_clicked()
         acDocManager->lockDocument(pDoc);
         if (acedAlert(_T("HELLO BOCHAO !")) == RTNORM)
         {
-            acutPrintf(_T("\nHELLO BOCHAO !"));
+            acutPrintf(_T("\nAlert"));
         }
         acDocManager->unlockDocument(pDoc);
     }
