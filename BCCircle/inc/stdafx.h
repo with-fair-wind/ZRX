@@ -64,6 +64,8 @@
 
 #include <ol_errno.h>
 
+#include <dbdynblk.h>
+
 // standard
 #include <tchar.h>
 

@@ -6,6 +6,8 @@
 #include "BCPersistentReactor.h"
 #include <chapter_13/persreactor.h>
 #include <chapter_13/dbreactor.h>
+#include <chapter_8/customClass.h>
+#include <dynblockReference.h>
 
 #include <QApplication>
 #include <QStyleFactory>
@@ -92,11 +94,33 @@ void initApp()
 							ACRX_CMD_MODAL,
 							assocCircles);
 
+	acedRegCmds->addCommand(_T("HELLOWORLD_COMMANDS"),
+							_T("CREATETREE"),
+							_T("CREATETREE"),
+							ACRX_CMD_MODAL,
+							createObjs);
+	acedRegCmds->addCommand(_T("HELLOWORLD_COMMANDS"),
+							_T("ERASETREE"),
+							_T("ERASETREE"),
+							ACRX_CMD_MODAL,
+							eraseTree);
+	acedRegCmds->addCommand(_T("HELLOWORLD_COMMANDS"),
+							_T("LISTTREE"),
+							_T("LISTTREE"),
+							ACRX_CMD_MODAL,
+							listTree);
+	acedRegCmds->addCommand(_T("HELLOWORLD_COMMANDS"),
+							_T("DYNBLKREFTEST"),
+							_T("DYNBLKREFTEST"),
+							ACRX_CMD_MODAL,
+							test_dynamicBlock);
+
 	// 注册自定义实体
 	BCCircle::rxInit();
 	MyObject::rxInit();
 	DimensionPersistentReactor::rxInit();
 	CPersistentReactor::rxInit();
+	CustomClass::rxInit();
 
 	acrxBuildClassHierarchy();
 }
@@ -121,6 +145,7 @@ void unloadApp()
 	deleteAcRxClass(MyObject::desc());
 	deleteAcRxClass(DimensionPersistentReactor::desc());
 	deleteAcRxClass(CPersistentReactor::desc());
+	deleteAcRxClass(CustomClass::desc());
 
 	// 反注册命令
 	acedRegCmds->removeGroup(_T("HELLOWORLD_COMMANDS"));
