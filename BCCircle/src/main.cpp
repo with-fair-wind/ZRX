@@ -8,6 +8,8 @@
 #include <chapter_13/dbreactor.h>
 #include <chapter_8/customClass.h>
 #include <dynblockReference.h>
+#include <BCAssocWatcher.h>
+#include <BCDimensionAssoc.h>
 
 #include <QApplication>
 #include <QStyleFactory>
@@ -25,6 +27,8 @@ void test3();
 void test4();
 void test5();
 void test6();
+
+BCAssocWatcher *g_pBCAssocWatcher = nullptr;
 
 QApplication *g_app = nullptr;
 
@@ -114,6 +118,11 @@ void initApp()
 							_T("DYNBLKREFTEST"),
 							ACRX_CMD_MODAL,
 							test_dynamicBlock);
+	acedRegCmds->addCommand(_T("HELLOWORLD_COMMANDS"),
+							_T("TESTDIMENSION"),
+							_T("TESTDIMENSION"),
+							ACRX_CMD_MODAL,
+							test_dimension);
 
 	// 注册自定义实体
 	BCCircle::rxInit();
@@ -121,6 +130,14 @@ void initApp()
 	DimensionPersistentReactor::rxInit();
 	CPersistentReactor::rxInit();
 	CustomClass::rxInit();
+	BCDimensionAssoc::rxInit();
+	BCLineDimensionPE::rxInit();
+
+	g_pBCAssocWatcher = new BCAssocWatcher;
+	if (g_pBCAssocWatcher)
+		acedEditor->addReactor(g_pBCAssocWatcher);
+
+	BCDimensionAssoc::desc()->addX(BCLineDimensionPE::desc(), &g_pBCAssocWatcher->m_bcLineDimensionPE);
 
 	acrxBuildClassHierarchy();
 }
@@ -140,12 +157,23 @@ void unloadApp()
 	removeInputContextReactor();
 	clearEntityReactor();
 
+	BCDimensionAssoc::desc()->delX(BCLineDimensionPE::desc());
+
+	if (g_pBCAssocWatcher)
+	{
+		acedEditor->removeReactor(g_pBCAssocWatcher);
+		delete g_pBCAssocWatcher;
+		g_pBCAssocWatcher = nullptr;
+	}
+
 	// 反注册自定义实体
 	deleteAcRxClass(BCCircle::desc());
 	deleteAcRxClass(MyObject::desc());
 	deleteAcRxClass(DimensionPersistentReactor::desc());
 	deleteAcRxClass(CPersistentReactor::desc());
 	deleteAcRxClass(CustomClass::desc());
+	deleteAcRxClass(BCDimensionAssoc::desc());
+	deleteAcRxClass(BCLineDimensionPE::desc());
 
 	// 反注册命令
 	acedRegCmds->removeGroup(_T("HELLOWORLD_COMMANDS"));

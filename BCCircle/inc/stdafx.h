@@ -65,9 +65,12 @@
 #include <ol_errno.h>
 
 #include <dbdynblk.h>
+#include <dbobjptr.h>
 
 // standard
 #include <tchar.h>
+#include <map>
+#include <utility>
 
 #ifdef _UNICODE
 #if defined _M_IX86

@@ -110,3 +110,33 @@ void modifyDistance(const AcDbObjectIdArray &objIdArr, double oriDistance, doubl
         es = pEnt->close();
     }
 }
+
+void modifyDistance(const AcDbObjectId &lineId, double oriDistance, double targetDistance)
+{
+    AcDbEntity *pEnt = nullptr;
+    Acad::ErrorStatus es;
+    if (acdbOpenAcDbEntity(pEnt, lineId, AcDb::kForWrite) == Acad::eOk)
+    {
+        if (pEnt->isKindOf(AcDbLine::desc()))
+        {
+            AcDbLine *pLine = AcDbLine::cast(pEnt);
+
+            AcGeVector3d direction = pLine->endPoint() - pLine->startPoint();
+            AcGeVector3d moveDirection = direction.y >= 0 ? AcGeVector3d(direction.y, -direction.x, 0) : AcGeVector3d(-direction.y, direction.x, 0);
+            moveDirection.normalize();
+
+            AcGeMatrix3d moveMatrix = AcGeMatrix3d::translation(moveDirection * (targetDistance - oriDistance));
+            pLine->transformBy(moveMatrix);
+
+            // AcGePoint3d newStartPoint = pLine->startPoint() + moveDirection * (targetDistance - oriDistance);
+            // AcGePoint3d newEndPoint = pLine->endPoint() + moveDirection * (targetDistance - oriDistance);
+
+            // es = pLine->setStartPoint(newStartPoint);
+            // es = pLine->setEndPoint(newEndPoint);
+
+            // es = pLine->upgradeOpen();
+            // es = pLine->close();
+        }
+        es = pEnt->close();
+    }
+}

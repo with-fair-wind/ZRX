@@ -65,8 +65,9 @@ void BCEntityReactor::openedForModify(const AcDbObject *dbObj)
     acutPrintf(strLayer);
 }
 
-void BCEntityReactor::modified(const AcDbObject * dbObj)
+void BCEntityReactor::modified(const AcDbObject *dbObj)
 {
+    AcTransaction *pTrans = actrTransactionManager->startTransaction();
     if (!dbObj->isKindOf(AcDbRotatedDimension::desc()))
     {
         acutPrintf(_T("\nObject is not a valid RotatedDimension Entity!"));
@@ -121,18 +122,20 @@ void BCEntityReactor::modified(const AcDbObject * dbObj)
                 CString strLayer;
                 strLayer.Format(_T("\nEntity:%s has been modified.The layerName:%s.\n"), pRotatedDim->isA()->name(), pRotatedDim->layer());
                 acutPrintf(strLayer);
-                //modifyDistance(m_geomIdArray, m_measuredValue, m_curDistance);
+
+                modifyDistance(m_geomIdArray, m_measuredValue, m_curDistance);
             }
         }
     }
+    actrTransactionManager->endTransaction();
 }
 
 void BCEntityReactor::objectClosed(const AcDbObjectId objId)
 {
-    //if (m_bflag)
+    // if (m_bflag)
     //{
-    //    m_bflag = false;
-    //    acutPrintf(_T("\nobjectClosed"));
+    //     m_bflag = false;
+    //     acutPrintf(_T("\nobjectClosed"));
 
     //    AcTransaction* pTrans = actrTransactionManager->startTransaction();
     //    //AcDbObject* dbObj = nullptr;
