@@ -192,6 +192,8 @@ Acad::ErrorStatus BCCircle::subGetGripPoints(AcGePoint3dArray &gripPoints, AcDbI
 {
 	assertReadEnabled();
 
+	AcDbObjectId id = this->objectId();
+
 	std::vector<AcGePoint3d> circleGrip{m_centerPos};
 	circleGrip.emplace_back(m_centerPos.x, m_centerPos.y + m_radius, m_centerPos.z);
 	circleGrip.emplace_back(m_centerPos.x, m_centerPos.y - m_radius, m_centerPos.z);
@@ -210,6 +212,8 @@ Acad::ErrorStatus BCCircle::subMoveGripPointsAt(const AcDbIntArray &indices, con
 		return Acad::eOk;
 
 	assertWriteEnabled();
+
+	AcDbObjectId id = this->objectId();
 
 	bool bMove = false;
 	for (int i = 0; i < indices.logicalLength(); ++i)

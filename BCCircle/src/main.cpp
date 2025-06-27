@@ -36,13 +36,15 @@ namespace QtInit
 {
 	inline int &getArgc()
 	{
-		static int ans = 1;
+		// static int ans = 1;
+		static int ans = 0;
 		return ans;
 	}
 
 	inline char **getArgv()
 	{
-		static char *argv[] = {R"(D:\soft\ZWCAD 2025\ZwCAD.exe)"};
+		// static char *argv[] = {R"(D:\soft\ZWCAD 2025\ZwCAD.exe)"};
+		static char *argv[] = {""};
 		return argv;
 	}
 }
@@ -61,68 +63,74 @@ void initApp()
 	{
 		std::wostringstream oss;
 		oss << _T("test") << i;
-		acedRegCmds->addCommand(_T("HELLOWORLD_COMMANDS"),
+		acedRegCmds->addCommand(_T("BC_COMMANDS"),
 								oss.str().c_str(),
 								oss.str().c_str(),
 								ACRX_CMD_TRANSPARENT,
 								cmdFuncVec[i]);
 	}
-	acedRegCmds->addCommand(_T("HELLOWORLD_COMMANDS"), _T("addEntReactor"), _T("addEntReactor"), ACRX_CMD_TRANSPARENT, addEntityReactor);
-	acedRegCmds->addCommand(_T("HELLOWORLD_COMMANDS"), _T("removeEntReactor"), _T("removeEntReactor"), ACRX_CMD_TRANSPARENT, removeEntityReactor);
-	acedRegCmds->addCommand(_T("HELLOWORLD_COMMANDS"), _T("clearEntReactor"), _T("clearEntReactor"), ACRX_CMD_TRANSPARENT, clearEntityReactor);
+	acedRegCmds->addCommand(_T("BC_COMMANDS"), _T("drawBCCircle"), _T("drawBCCircle"), ACRX_CMD_TRANSPARENT, test_mycircle);
+	acedRegCmds->addCommand(_T("BC_COMMANDS"), _T("addEntReactor"), _T("addEntReactor"), ACRX_CMD_TRANSPARENT, addEntityReactor);
+	acedRegCmds->addCommand(_T("BC_COMMANDS"), _T("removeEntReactor"), _T("removeEntReactor"), ACRX_CMD_TRANSPARENT, removeEntityReactor);
+	acedRegCmds->addCommand(_T("BC_COMMANDS"), _T("clearEntReactor"), _T("clearEntReactor"), ACRX_CMD_TRANSPARENT, clearEntityReactor);
 
-	acedRegCmds->addCommand(_T("HELLOWORLD_COMMANDS"), _T("addInputContextReactor"), _T("addInputContextReactor"), ACRX_CMD_MODAL, addInputContextReactor);
-	acedRegCmds->addCommand(_T("HELLOWORLD_COMMANDS"), _T("removeInputContextReactor"), _T("removeInputContextReactor"), ACRX_CMD_MODAL, removeInputContextReactor);
+	acedRegCmds->addCommand(_T("BC_COMMANDS"), _T("addInputContextReactor"), _T("addInputContextReactor"), ACRX_CMD_MODAL, addInputContextReactor);
+	acedRegCmds->addCommand(_T("BC_COMMANDS"), _T("removeInputContextReactor"), _T("removeInputContextReactor"), ACRX_CMD_MODAL, removeInputContextReactor);
 
-	acedRegCmds->addCommand(_T("HELLOWORLD_COMMANDS"),
+	acedRegCmds->addCommand(_T("BC_COMMANDS"),
 							_T("PersistentReactor"),
 							_T("PersistentReactor"),
 							ACRX_CMD_MODAL,
 							cmd_PersistentReactor);
 
-	acedRegCmds->addCommand(_T("HELLOWORLD_COMMANDS"),
+	acedRegCmds->addCommand(_T("BC_COMMANDS"),
 							_T("WATCHDB"),
 							_T("WATCHDB"),
 							ACRX_CMD_MODAL,
 							watchDb);
 
-	acedRegCmds->addCommand(_T("HELLOWORLD_COMMANDS"),
+	acedRegCmds->addCommand(_T("BC_COMMANDS"),
 							_T("CLEARREAC"),
 							_T("CLEARREAC"),
 							ACRX_CMD_MODAL,
 							clearReactors);
 
-	acedRegCmds->addCommand(_T("HELLOWORLD_COMMANDS"),
+	acedRegCmds->addCommand(_T("BC_COMMANDS"),
 							_T("ASSOCCIRS"),
 							_T("ASSOCCIRS"),
 							ACRX_CMD_MODAL,
 							assocCircles);
 
-	acedRegCmds->addCommand(_T("HELLOWORLD_COMMANDS"),
+	acedRegCmds->addCommand(_T("BC_COMMANDS"),
 							_T("CREATETREE"),
 							_T("CREATETREE"),
 							ACRX_CMD_MODAL,
 							createObjs);
-	acedRegCmds->addCommand(_T("HELLOWORLD_COMMANDS"),
+	acedRegCmds->addCommand(_T("BC_COMMANDS"),
 							_T("ERASETREE"),
 							_T("ERASETREE"),
 							ACRX_CMD_MODAL,
 							eraseTree);
-	acedRegCmds->addCommand(_T("HELLOWORLD_COMMANDS"),
+	acedRegCmds->addCommand(_T("BC_COMMANDS"),
 							_T("LISTTREE"),
 							_T("LISTTREE"),
 							ACRX_CMD_MODAL,
 							listTree);
-	acedRegCmds->addCommand(_T("HELLOWORLD_COMMANDS"),
+	acedRegCmds->addCommand(_T("BC_COMMANDS"),
 							_T("DYNBLKREFTEST"),
 							_T("DYNBLKREFTEST"),
 							ACRX_CMD_MODAL,
 							test_dynamicBlock);
-	acedRegCmds->addCommand(_T("HELLOWORLD_COMMANDS"),
+	acedRegCmds->addCommand(_T("BC_COMMANDS"),
 							_T("TESTDIMENSION"),
 							_T("TESTDIMENSION"),
 							ACRX_CMD_MODAL,
 							test_dimension);
+	acedRegCmds->addCommand(_T("BC_COMMANDS"),
+							_T("TESTCAL"),
+							_T("TESTCAL"),
+							ACRX_CMD_MODAL,
+							test_modify_distance);
 
 	// 注册自定义实体
 	BCCircle::rxInit();
@@ -176,12 +184,12 @@ void unloadApp()
 	deleteAcRxClass(BCLineDimensionPE::desc());
 
 	// 反注册命令
-	acedRegCmds->removeGroup(_T("HELLOWORLD_COMMANDS"));
+	acedRegCmds->removeGroup(_T("BC_COMMANDS"));
 }
 
 void test0()
 {
-	test_dim();
+	// test_dim();
 	// test_mycircle();
 }
 

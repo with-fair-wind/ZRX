@@ -9,7 +9,8 @@ set(CMAKE_AUTORCC ON)
 # "D:/soft/Qt/Qt6.8/6.8.1/msvc2022_64"
 # "D:/soft/Qt/Qt6.8/6.8.1/mingw_64"
 set(QT_PATH "D:/soft/Qt/Qt5.14.2/5.14.2/msvc2017_64" CACHE PATH "QT_PATH")
-set(CMAKE_PREFIX_PATH ${QT_PATH})
+
+# set(CMAKE_PREFIX_PATH ${QT_PATH})
 
 # set(Qt5_DIR " ${QT_PATH}/lib/cmake/Qt5 ")
 # set(ENV{QT_QPA_PLATFORM_PLUGIN_PATH} "D:/soft/Qt/Qt5.14.2/5.14.2/msvc2017_64/plugins/platforms")

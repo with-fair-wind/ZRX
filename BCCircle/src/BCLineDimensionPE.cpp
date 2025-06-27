@@ -2,6 +2,9 @@
 #include <BCDimensionAssoc.h>
 #include <BCDimension.h>
 
+extern AcDbObjectId g_lineId;
+extern double g_oriDistance;
+
 ACRX_NO_CONS_DEFINE_MEMBERS(BCLineDimensionPE, AcRxObject);
 
 void BCLineDimensionPE::modified(AcDbObject *pObj, const AcDbObject *pAssocObj)
@@ -39,24 +42,29 @@ void BCLineDimensionPE::update(const AcDbObjectId &assocId, const AssocData &ass
         AcDbObjectPointer<BCDimensionAssoc> pAssoc(assocId, AcDb::kForRead);
         if (pAssoc)
         {
-            AcDbObjectPointer<AcDbRotatedDimension> pRotatedDim(pAssoc->dimensionId(), AcDb::kForRead);
             double measuredValue = 0;
-            pRotatedDim->measurement(measuredValue);
-            modifyDistance(pAssoc->lineId(), measuredValue, 100);
-
-            AcDbObjectId dictId = pRotatedDim->extensionDictionary();
-            AcDbDictionary *pDict = nullptr;
-            if (acdbOpenObject(pDict, dictId, AcDb::kForRead) == Acad::eOk)
             {
-                AcDbDimAssoc *pDimAssoc = nullptr;
-                pDict->getAt(_T("ACAD_DIMASSOC"), pDimAssoc, AcDb::kForWrite);
-                pDict->close();
-                if (pDimAssoc)
-                {
-                    Acad::ErrorStatus es = pDimAssoc->updateDimension();
-                    pDimAssoc->close();
-                }
+                AcDbObjectPointer<AcDbRotatedDimension> pRotatedDim(pAssoc->dimensionId(), AcDb::kForRead);
+                pRotatedDim->measurement(measuredValue);
             }
+            // modifyDistance(pAssoc->lineId(), measuredValue, 100);
+            g_lineId = pAssoc->lineId();
+            g_oriDistance = measuredValue;
+            acDocManagerPtr()->sendStringToExecute(acDocManagerPtr()->curDocument(), _T("TESTCAL"));
+
+            // AcDbObjectId dictId = pRotatedDim->extensionDictionary();
+            // AcDbDictionary *pDict = nullptr;
+            // if (acdbOpenObject(pDict, dictId, AcDb::kForRead) == Acad::eOk)
+            // {
+            //     AcDbDimAssoc *pDimAssoc = nullptr;
+            //     pDict->getAt(_T("ACAD_DIMASSOC"), pDimAssoc, AcDb::kForWrite);
+            //     pDict->close();
+            //     if (pDimAssoc)
+            //     {
+            //         Acad::ErrorStatus es = pDimAssoc->updateDimension();
+            //         pDimAssoc->close();
+            //     }
+            // }
         }
     }
 }

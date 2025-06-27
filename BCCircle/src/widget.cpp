@@ -16,7 +16,7 @@ Widget::Widget(QWidget *parent)
 
 void Widget::on_clicked()
 {
-#define V_3
+#define V_4
     AcApDocument *pDoc = acDocManager->curDocument();
 #ifdef V_1
     if (pDoc)
@@ -72,6 +72,10 @@ void Widget::on_clicked()
         test_mycircle();
         acDocManager->unlockDocument(pDoc);
     }
+#elif defined(V_4)
+    acDocManagerPtr()->sendStringToExecute(acDocManagerPtr()->curDocument(), _T("drawBCCircle "), Adesk::kFalse, Adesk::kTrue);
+    // CWnd::FromHandle(acedGetAcadFrame()->m_hWnd)->SetActiveWindow();
+    // CWnd::FromHandle(acedGetAcadFrame()->m_hWnd)->SetFocus();
 #endif
 }
 

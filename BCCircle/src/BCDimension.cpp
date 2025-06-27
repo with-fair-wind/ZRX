@@ -1,5 +1,8 @@
 #include <BCDimension.h>
 
+AcDbObjectId g_lineId;
+double g_oriDistance;
+
 void test_dim()
 {
     ads_name entres;
@@ -139,4 +142,9 @@ void modifyDistance(const AcDbObjectId &lineId, double oriDistance, double targe
         }
         es = pEnt->close();
     }
+}
+
+void test_modify_distance()
+{
+    modifyDistance(g_lineId, g_oriDistance, 100);
 }

@@ -67,6 +67,9 @@
 #include <dbdynblk.h>
 #include <dbobjptr.h>
 
+#include <rxmfcapi.h>
+// #include <aduiPaletteSet.h>
+
 // standard
 #include <tchar.h>
 #include <map>
